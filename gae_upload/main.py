@@ -57,13 +57,16 @@ class BucketForm(RequestHandler):
 
     if bucket_name:
       if self._bucket_exists(bucket_name):
-        bucket = Bucket(key_name=bucket_name)
-        bucket.creator = users.get_current_user()
-        bucket.put()
+        if Bucket.get_by_key_name(bucket_name):
+          self.bad_request('Error: bucket already imported')
+        else:
+          bucket = Bucket(key_name=bucket_name)
+          bucket.creator = users.get_current_user()
+          bucket.put()
 
-        # TODO: enqueue BucketImportTask
+          # TODO: enqueue BucketImportTask
 
-        self.write('ACCEPTED') # TODO: redirect to status page
+          self.write('ACCEPTED') # TODO: redirect to status page
       else:
         self.bad_request('Error: "%s" bucket does not exist' % bucket_name)
     else:
