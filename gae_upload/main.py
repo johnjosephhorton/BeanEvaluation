@@ -57,9 +57,8 @@ class BucketForm(RequestHandler):
 
     if bucket_name:
       if self._bucket_exists(bucket_name):
-        bucket = Bucket()
+        bucket = Bucket(key_name=bucket_name)
         bucket.creator = users.get_current_user()
-        bucket.name = bucket_name
         bucket.put()
 
         # TODO: enqueue BucketImportTask

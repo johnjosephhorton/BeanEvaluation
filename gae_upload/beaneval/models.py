@@ -13,7 +13,6 @@ class Worker(datastore.Model):
 class Bucket(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   creator = datastore.UserProperty()
-  name = datastore.StringProperty()
 
 class Image(datastore.Model):
   bucket = datastore.ReferenceProperty(Bucket, collection_name='images')
