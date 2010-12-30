@@ -2,6 +2,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
 from beaneval.http import RequestHandler
+from beaneval.models import Worker
+from beaneval.misc import nonce
 
 
 class Root(RequestHandler):
@@ -9,9 +11,33 @@ class Root(RequestHandler):
     self.write('ok')
 
 
+class WorkerForm(RequestHandler):
+  def get(self):
+    self.render('priv/worker_form.html', {
+      'self': self
+    , 'worker': Worker()
+    })
+
+  def post(self):
+    worker = Worker()
+    worker.access_token = nonce()
+    worker.odesk_identifier = self.param_value('odesk_identifier')
+    worker.email_address = self.param_value('email_address')
+    worker.name = self.param_value('name')
+    worker.put()
+
+    access_url = self.host_url('/evaluate/%s' % worker.access_token)
+
+    self.render('priv/worker_access_url.html', {
+      'worker': worker
+    , 'access_url': access_url
+    })
+
+
 def handlers():
   return [
     ('/', Root)
+  , ('/worker', WorkerForm)
   ]
 
 

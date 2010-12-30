@@ -1,0 +1,26 @@
+{% extends "_layout.html" %}
+
+{% block body %}
+  <h2>New worker</h2>
+
+  <form action="{{ self|escape }}" method="POST" class="worker_form">
+    <div class="field">
+      <label for="name_input">Name</label>
+      <input id="name_input" name="name" type="text" size="40"{% if worker.name %} value="{{ worker.name|escape }}"{% endif %}>
+    </div>
+
+    <div class="field">
+      <label for="odesk_identifier_input">oDesk Identifier</label>
+      <input id="odesk_identifier_input" name="odesk_identifier" type="text" size="40"{% if worker.odesk_identifier %} value="{{ worker.odesk_identifier|escape }}"{% endif %}>
+    </div>
+
+    <div class="field">
+      <label for="email_address_input">Email Address</label>
+      <input id="email_address_input" name="email_address" type="email" size="40"{% if worker.email_address %} value="{{ worker.email_address|escape }}"{% endif %}>
+    </div>
+
+    <div class="footer">
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+{% endblock %}

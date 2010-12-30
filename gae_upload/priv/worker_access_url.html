@@ -1,0 +1,11 @@
+{% extends "_layout.html" %}
+
+{% block body %}
+  <h2>Worker added</h2>
+
+  <p>The following link can be used by {% if worker.name %}{{ worker.name|escape }}{% else %}this worker{% endif %} to login and evaluate photos:</p>
+
+  <p>
+    <a href="{{ access_url|escape }}">{{ access_url|escape }}</a>
+  </p>
+{% endblock %}
