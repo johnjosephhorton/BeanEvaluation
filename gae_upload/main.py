@@ -6,9 +6,12 @@ from beaneval.models import Worker
 from beaneval.misc import nonce
 
 
-class Root(RequestHandler):
+class Dashboard(RequestHandler):
   def get(self):
-    self.write('ok')
+    self.render('priv/dashboard.html', {
+      'worker_count': Worker.all().count()
+    , 'worker_form_url': self.host_url('/worker')
+    })
 
 
 class WorkerForm(RequestHandler):
@@ -46,7 +49,7 @@ class EvaluationForm(RequestHandler):
 
 def handlers():
   return [
-    ('/', Root)
+    ('/', Dashboard)
   , ('/worker', WorkerForm)
   , ('/evaluation/([^/]+)', EvaluationForm)
   ]
