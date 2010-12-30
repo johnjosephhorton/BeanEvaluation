@@ -10,6 +10,10 @@ handlers:
 - url: /static
   static_dir: static
 
+- url: /evaluation/*
+  script: main.py
+  secure: always
+
 - url: /.*
   script: main.py
   secure: always
