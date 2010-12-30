@@ -16,6 +16,7 @@ class Dashboard(RequestHandler):
     self.render('priv/dashboard.html', {
       'worker_count': Worker.all().count()
     , 'worker_form_url': self.host_url('/worker')
+    , 'bucket_form_url': self.host_url('/bucket')
     })
 
 
