@@ -8,6 +8,8 @@ from beaneval.misc import nonce
 
 from boto.s3.connection import S3Connection
 
+from datetime import datetime
+
 import yaml
 
 
@@ -92,6 +94,9 @@ class EvaluationForm(RequestHandler):
     if worker is None:
       pass
     else:
+      worker.last_seen = datetime.now()
+      worker.put()
+
       self.write('TODO')
 
 

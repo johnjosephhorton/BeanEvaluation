@@ -5,6 +5,7 @@ class Worker(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   creator = datastore.UserProperty()
   access_token = datastore.StringProperty()
+  last_seen = datastore.DateTimeProperty()
   odesk_identifier = datastore.StringProperty()
   email_address = datastore.EmailProperty()
   name = datastore.StringProperty()
