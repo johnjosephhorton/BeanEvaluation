@@ -3,7 +3,7 @@
 {% block body %}
   <h2>New worker</h2>
 
-  <form action="{{ self|escape }}" method="POST" class="worker_form">
+  <form action="{{ self|escape }}" method="POST" class="styled_form">
     <div class="field">
       <label for="name_input">Name</label>
       <input id="name_input" name="name" type="text" size="40"{% if worker.name %} value="{{ worker.name|escape }}"{% endif %}>

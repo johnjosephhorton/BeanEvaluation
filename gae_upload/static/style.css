@@ -6,28 +6,28 @@ h2 {
   margin: 30px 30px 0;
 }
 
-.worker_form, p {
+.styled_form, p {
   margin: 15px 30px 0;
 }
 
-.worker_form .field {
+.styled_form .field {
   margin-top: 15px;
 }
 
-.worker_form .field:first-child {
+.styled_form .field:first-child {
   margin-top: 0;
 }
 
-.worker_form .footer {
+.styled_form .footer {
   margin-top: 25px;
 }
 
-.worker_form .field label,
-.worker_form .field input {
+.styled_form .field label,
+.styled_form .field input {
   font-size: 11pt;
 }
 
-.worker_form label {
+.styled_form label {
   width: 10em;
   display: inline-block;
 }

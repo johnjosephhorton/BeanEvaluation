@@ -3,8 +3,12 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
 from beaneval.http import RequestHandler
-from beaneval.models import Worker
+from beaneval.models import Worker, Bucket
 from beaneval.misc import nonce
+
+from boto.s3.connection import S3Connection
+
+import yaml
 
 
 class Dashboard(RequestHandler):
@@ -39,6 +43,45 @@ class WorkerForm(RequestHandler):
     })
 
 
+class BucketForm(RequestHandler):
+  def get(self):
+    self.render('priv/bucket_form.html', {'self': self})
+
+  def post(self):
+    bucket_name = self.param_value('name')
+
+    if bucket_name:
+      if self._bucket_exists(bucket_name):
+        bucket = Bucket()
+        bucket.creator = users.get_current_user()
+        bucket.name = bucket_name
+        bucket.put()
+
+        # TODO: enqueue BucketImportTask
+
+        self.write('ACCEPTED') # TODO: redirect to status page
+      else:
+        self.bad_request('Error: "%s" bucket does not exist' % bucket_name)
+    else:
+      self.redirect(self.request.url)
+
+  def _bucket_exists(self, bucket_name):
+    aws = self._load_yaml('aws.yaml')
+
+    connection = S3Connection(aws['access_key_id'], aws['secret_access_key'])
+
+    return bool(connection.lookup(bucket_name))
+
+  def _load_yaml(self, path):
+    io = open(path)
+
+    data = yaml.load(io)
+
+    io.close()
+
+    return data
+
+
 class EvaluationForm(RequestHandler):
   def get(self, access_token):
     worker = Worker.all().filter('access_token =', access_token).get()
@@ -53,6 +96,7 @@ def handlers():
   return [
     ('/', Dashboard)
   , ('/worker', WorkerForm)
+  , ('/bucket', BucketForm)
   , ('/evaluation/([^/]+)', EvaluationForm)
   ]
 

@@ -1,0 +1,16 @@
+{% extends "_layout.html" %}
+
+{% block body %}
+  <h2>New image bucket</h2>
+
+  <form action="{{ self|escape }}" method="POST" class="styled_form">
+    <div class="field">
+      <label for="name_input">Name</label>
+      <input id="name_input" name="name" type="text" size="40">
+    </div>
+
+    <div class="footer">
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+{% endblock %}
