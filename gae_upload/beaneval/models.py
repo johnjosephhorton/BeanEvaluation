@@ -10,9 +10,11 @@ class Worker(datastore.Model):
   email_address = datastore.EmailProperty()
   name = datastore.StringProperty()
 
+
 class Bucket(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   creator = datastore.UserProperty()
+
 
 class Image(datastore.Model):
   bucket = datastore.ReferenceProperty(Bucket, collection_name='images')
