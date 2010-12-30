@@ -26,7 +26,7 @@ class WorkerForm(RequestHandler):
     worker.name = self.param_value('name')
     worker.put()
 
-    access_url = self.host_url('/evaluate/%s' % worker.access_token)
+    access_url = self.host_url('/evaluation/%s' % worker.access_token)
 
     self.render('priv/worker_access_url.html', {
       'worker': worker
@@ -34,10 +34,21 @@ class WorkerForm(RequestHandler):
     })
 
 
+class EvaluationForm(RequestHandler):
+  def get(self, access_token):
+    worker = Worker.all().filter('access_token =', access_token).get()
+
+    if worker is None:
+      pass
+    else:
+      self.write('TODO')
+
+
 def handlers():
   return [
     ('/', Root)
   , ('/worker', WorkerForm)
+  , ('/evaluation/([^/]+)', EvaluationForm)
   ]
 
 
