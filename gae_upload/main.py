@@ -5,12 +5,9 @@ from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 from beaneval.http import RequestHandler
 from beaneval.models import Worker, Bucket, Image
 from beaneval.misc import nonce
-
-from boto.s3.connection import S3Connection
+from beaneval import s3
 
 from datetime import datetime
-
-import yaml
 
 
 class Dashboard(RequestHandler):
@@ -56,7 +53,7 @@ class BucketForm(RequestHandler):
     bucket_name = self.param_value('name')
 
     if bucket_name:
-      if self._bucket_exists(bucket_name):
+      if s3.bucket_exists(bucket_name):
         if Bucket.get_by_key_name(bucket_name):
           self.bad_request('Error: bucket already imported')
         else:
@@ -71,22 +68,6 @@ class BucketForm(RequestHandler):
         self.bad_request('Error: "%s" bucket does not exist' % bucket_name)
     else:
       self.redirect(self.request.url)
-
-  def _bucket_exists(self, bucket_name):
-    aws = self._load_yaml('aws.yaml')
-
-    connection = S3Connection(aws['access_key_id'], aws['secret_access_key'])
-
-    return bool(connection.lookup(bucket_name))
-
-  def _load_yaml(self, path):
-    io = open(path)
-
-    data = yaml.load(io)
-
-    io.close()
-
-    return data
 
 
 class EvaluationForm(RequestHandler):
