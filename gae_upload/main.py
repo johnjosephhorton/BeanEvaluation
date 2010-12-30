@@ -3,7 +3,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
 from beaneval.http import RequestHandler
-from beaneval.models import Worker, Bucket
+from beaneval.models import Worker, Bucket, Image
 from beaneval.misc import nonce
 
 from boto.s3.connection import S3Connection
@@ -15,6 +15,8 @@ class Dashboard(RequestHandler):
   def get(self):
     self.render('priv/dashboard.html', {
       'worker_count': Worker.all().count()
+    , 'bucket_count': Bucket.all().count()
+    , 'image_count': Image.all().count()
     , 'worker_form_url': self.host_url('/worker')
     , 'bucket_form_url': self.host_url('/bucket')
     })
