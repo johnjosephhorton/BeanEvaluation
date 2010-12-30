@@ -1,3 +1,4 @@
+from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
@@ -23,6 +24,7 @@ class WorkerForm(RequestHandler):
 
   def post(self):
     worker = Worker()
+    worker.creator = users.get_current_user()
     worker.access_token = nonce()
     worker.odesk_identifier = self.param_value('odesk_identifier')
     worker.email_address = self.param_value('email_address')
