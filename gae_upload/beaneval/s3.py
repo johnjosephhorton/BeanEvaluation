@@ -9,8 +9,12 @@ def connection():
   return S3Connection(aws['access_key_id'], aws['secret_access_key'])
 
 
+def bucket_lookup(bucket_name):
+  return connection().lookup(bucket_name)
+
+
 def bucket_exists(bucket_name):
-  return bool(connection().lookup(bucket_name))
+  return bool(bucket_lookup(bucket_name))
 
 
 def load_yaml(path):
