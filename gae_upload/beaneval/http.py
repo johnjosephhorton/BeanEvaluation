@@ -7,6 +7,9 @@ import cgi, urllib
 
 
 class RequestHandler(webapp.RequestHandler):
+  def __str__(self):
+    return self.request.url
+
   def write(self, data):
     self.response.out.write(data)
 
