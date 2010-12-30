@@ -37,3 +37,11 @@ class RequestHandler(webapp.RequestHandler):
 
   def bad_request(self, text='Bad Request'):
     self.reply(400, text)
+
+  def param_value(self, key, typecast=unicode):
+    value = self.request.get(key).strip()
+
+    if len(value) > 0:
+      return typecast(value)
+    else:
+      return None
