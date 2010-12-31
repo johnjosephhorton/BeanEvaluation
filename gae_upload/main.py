@@ -1,9 +1,11 @@
 from google.appengine.api import users
+from google.appengine.api import taskqueue
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
 from beaneval.http import RequestHandler
 from beaneval.models import Worker, Bucket, Image
+from beaneval.models import start_import
 from beaneval.misc import nonce
 from beaneval import s3
 
@@ -61,13 +63,30 @@ class BucketForm(RequestHandler):
           bucket.creator = users.get_current_user()
           bucket.put()
 
-          # TODO: enqueue BucketImportTask
+          taskqueue.add(queue_name='bucket-import', params={'key': bucket.key()})
 
           self.write('ACCEPTED') # TODO: redirect to status page
       else:
         self.bad_request('Error: "%s" bucket does not exist' % bucket_name)
     else:
       self.redirect(self.request.url)
+
+
+class BucketImportTask(RequestHandler):
+  def post(self):
+    bucket = start_import(self.request.get('key'))
+
+    if bucket:
+      bucket_name = bucket.key().name()
+
+      for key in s3.bucket_lookup(bucket_name).list():
+        image = Image()
+        image.bucket = bucket
+        image.url = 'http://%s.s3.amazonaws.com/%s' % (bucket_name, key.name)
+        image.put()
+
+      bucket.import_finished = datetime.now()
+      bucket.put()
 
 
 class EvaluationForm(RequestHandler):
@@ -86,6 +105,7 @@ class EvaluationForm(RequestHandler):
 def handlers():
   return [
     ('/', Dashboard)
+  , ('/_ah/queue/bucket-import', BucketImportTask)
   , ('/worker', WorkerForm)
   , ('/bucket', BucketForm)
   , ('/evaluation/([^/]+)', EvaluationForm)

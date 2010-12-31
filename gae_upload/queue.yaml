@@ -1,0 +1,3 @@
+queue:
+- name: bucket-import
+  rate: 5/s
