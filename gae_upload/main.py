@@ -65,7 +65,7 @@ class BucketForm(RequestHandler):
 
           taskqueue.add(queue_name='bucket-import', params={'key': bucket.key()})
 
-          self.write('ACCEPTED') # TODO: redirect to status page
+          self.redirect('/')
       else:
         self.bad_request('Error: "%s" bucket does not exist' % bucket_name)
     else:
