@@ -3,16 +3,6 @@ from google.appengine.ext import db as datastore
 from datetime import datetime
 
 
-class Worker(datastore.Model):
-  created = datastore.DateTimeProperty(auto_now_add=True)
-  creator = datastore.UserProperty()
-  access_token = datastore.StringProperty()
-  last_seen = datastore.DateTimeProperty()
-  odesk_identifier = datastore.StringProperty()
-  email_address = datastore.EmailProperty()
-  name = datastore.StringProperty()
-
-
 class Bucket(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
   creator = datastore.UserProperty()
@@ -23,6 +13,18 @@ class Bucket(datastore.Model):
 class Image(datastore.Model):
   bucket = datastore.ReferenceProperty(Bucket, collection_name='images')
   url = datastore.StringProperty()
+
+
+class Worker(datastore.Model):
+  created = datastore.DateTimeProperty(auto_now_add=True)
+  bucket = datastore.ReferenceProperty(Bucket, collection_name='workers')
+  image = datastore.ReferenceProperty(Image, collection_name='workers')
+  creator = datastore.UserProperty()
+  access_token = datastore.StringProperty()
+  last_seen = datastore.DateTimeProperty()
+  odesk_identifier = datastore.StringProperty()
+  email_address = datastore.EmailProperty()
+  name = datastore.StringProperty()
 
 
 class Evaluation(datastore.Model):
