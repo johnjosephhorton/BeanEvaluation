@@ -1,0 +1,35 @@
+{% extends "_layout.html" %}
+
+{% block body %}
+  <h2>Image evaluation</h2>
+
+  <div class="image"><img src="{{ image_url|escape }}"></div>
+
+  <p>Please evaluate this image by completing and submitting the form below.</p>
+
+  <form action="{{ self|escape }}" method="POST" class="styled_form">
+    <div class="field">
+      <label for="tape_id_input">Tape ID</label>
+      <input id="tape_id_input" name="tape_id" type="number" min="0" size="8"{% if data.tape_id %} value="{{ data.tape_id|escape }}"{% endif %}>
+    </div>
+
+    <div class="field">
+      <label for="day_input">Day</label>
+      <input id="day_input" name="day" type="number" min="0" size="8"{% if data.day %} value="{{ data.day|escape }}"{% endif %}>
+    </div>
+
+    <div class="field">
+      <label for="month_input">Month</label>
+      <input id="month_input" name="month" type="number" min="0" size="8"{% if data.month %} value="{{ data.month|escape }}"{% endif %}>
+    </div>
+
+    <div class="field">
+      <label for="error_count_input">Error Count</label>
+      <input id="error_count_input" name="error_count" type="number" min="0" size="8"{% if data.error_count %} value="{{ data.error_count|escape }}"{% endif %}>
+    </div>
+
+    <div class="footer">
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+{% endblock %}

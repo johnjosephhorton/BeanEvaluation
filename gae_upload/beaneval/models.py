@@ -2,6 +2,8 @@ from google.appengine.ext import db as datastore
 
 from datetime import datetime
 
+import random
+
 
 class Bucket(datastore.Model):
   created = datastore.DateTimeProperty(auto_now_add=True)
@@ -51,3 +53,17 @@ def _set_import_started(bucket_key):
   bucket.put()
 
   return bucket
+
+
+def next_image(worker):
+  images = list(worker.bucket.images)
+
+  random.shuffle(images)
+
+  for image in images:
+    evaluation = worker.evaluations.filter('image = ', image).get()
+
+    if evaluation is None:
+      return image
+
+  return None

@@ -5,8 +5,8 @@ from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
 from beaneval.http import RequestHandler
 from beaneval.http import access_token_required
-from beaneval.models import Worker, Bucket, Image
-from beaneval.models import start_import
+from beaneval.models import Worker, Bucket, Image, Evaluation
+from beaneval.models import start_import, next_image
 from beaneval.misc import nonce
 from beaneval import s3
 
@@ -93,7 +93,40 @@ class BucketImportTask(RequestHandler):
 class EvaluationForm(RequestHandler):
   @access_token_required
   def get(self, access_token):
-    self.write('TODO')
+    if self.worker.bucket:
+      if self.worker.image:
+        self.render('priv/evaluation_form.html', {
+          'self': self
+        , 'image_url': self.worker.image.url
+        })
+      else:
+        self.write('No images to evaluate')
+    else:
+      self.write('No images to evaluate')
+
+  @access_token_required
+  def post(self, access_token):
+    if self.worker.image:
+      evaluation = Evaluation()
+
+      try:
+        evaluation.tape_id = int(self.request.get('tape_id'))
+        evaluation.day = int(self.request.get('day'))
+        evaluation.month = int(self.request.get('month'))
+        evaluation.error_count = int(self.request.get('error_count'))
+      except ValueError:
+        return self.bad_request()
+
+      evaluation.worker = self.worker
+      evaluation.image = self.worker.image
+      evaluation.put()
+
+      self.worker.image = next_image(self.worker)
+      self.worker.put()
+
+      self.redirect(self.request.url)
+    else:
+      self.method_not_allowed()
 
 
 def handlers():

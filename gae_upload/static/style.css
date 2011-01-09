@@ -1,12 +1,13 @@
 body {
   font-family: "Helvetica", sans-serif;
+  padding-bottom: 30px;
 }
 
 h2 {
   margin: 30px 30px 0;
 }
 
-.styled_form, p {
+.styled_form, p, .image {
   margin: 15px 30px 0;
 }
 
