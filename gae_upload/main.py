@@ -4,6 +4,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app as run_wsgi
 
 from beaneval.http import RequestHandler
+from beaneval.http import access_token_required
 from beaneval.models import Worker, Bucket, Image
 from beaneval.models import start_import
 from beaneval.misc import nonce
@@ -90,16 +91,9 @@ class BucketImportTask(RequestHandler):
 
 
 class EvaluationForm(RequestHandler):
+  @access_token_required
   def get(self, access_token):
-    worker = Worker.all().filter('access_token =', access_token).get()
-
-    if worker is None:
-      pass
-    else:
-      worker.last_seen = datetime.now()
-      worker.put()
-
-      self.write('TODO')
+    self.write('TODO')
 
 
 def handlers():

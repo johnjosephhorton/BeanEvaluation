@@ -1,7 +1,11 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
+from beaneval.models import Worker
+
 from django.utils import simplejson as json
+
+from datetime import datetime
 
 import cgi, urllib
 
@@ -51,3 +55,18 @@ class RequestHandler(webapp.RequestHandler):
       return typecast(value)
     else:
       return None
+
+
+def access_token_required(fn):
+  def _fn(self, access_token, *args, **kwargs):
+    self.worker = Worker.all().filter('access_token =', access_token).get()
+
+    if self.worker:
+      self.worker.last_seen = datetime.now()
+      self.worker.put()
+
+      return fn(self, access_token, *args, **kwargs)
+    else:
+      self.not_found()
+
+  return _fn
