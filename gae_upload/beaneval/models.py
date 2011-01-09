@@ -25,6 +25,16 @@ class Image(datastore.Model):
   url = datastore.StringProperty()
 
 
+class Evaluation(datastore.Model):
+  created = datastore.DateTimeProperty(auto_now_add=True)
+  worker = datastore.ReferenceProperty(Worker, collection_name='evaluations')
+  image = datastore.ReferenceProperty(Image, collection_name='evaluations')
+  tape_id = datastore.IntegerProperty()
+  day = datastore.IntegerProperty()
+  month = datastore.IntegerProperty()
+  error_count = datastore.IntegerProperty()
+
+
 def start_import(bucket_key):
   return datastore.run_in_transaction(_set_import_started, bucket_key)
 
