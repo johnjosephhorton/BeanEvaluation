@@ -1,3 +1,5 @@
 queue:
 - name: bucket-import
   rate: 5/s
+- name: bucket-workers
+  rate: 5/s

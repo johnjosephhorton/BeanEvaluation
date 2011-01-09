@@ -86,8 +86,20 @@ class BucketImportTask(RequestHandler):
         image.url = 'http://%s.s3.amazonaws.com/%s' % (bucket_name, key.name)
         image.put()
 
+      taskqueue.add(queue_name='bucket-workers', params={'key': bucket.key()})
+
       bucket.import_finished = datetime.now()
       bucket.put()
+
+
+class BucketWorkersTask(RequestHandler):
+  def post(self):
+    bucket = Bucket.get(self.request.get('key'))
+
+    for worker in Worker.all():
+      worker.bucket = bucket
+      worker.image = next_image(worker)
+      worker.put()
 
 
 class EvaluationForm(RequestHandler):
@@ -133,6 +145,7 @@ def handlers():
   return [
     ('/', Dashboard)
   , ('/_ah/queue/bucket-import', BucketImportTask)
+  , ('/_ah/queue/bucket-workers', BucketWorkersTask)
   , ('/worker', WorkerForm)
   , ('/bucket', BucketForm)
   , ('/evaluation/([^/]+)', EvaluationForm)
